@@ -19,6 +19,7 @@ import com.exgames.test.ecstest.components.VelocityComponent;
 import com.exgames.test.ecstest.components.SoundComponent;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.Audio;
+import com.exgames.test.ecstest.components.ShaderComponent;
 
 public class MyGdxGame implements ApplicationListener {
 	
@@ -42,7 +43,7 @@ public class MyGdxGame implements ApplicationListener {
 		assets.loadAssets();
 		manager = assets.getAssetManager();
 
-		batch = new SpriteBatch();
+		batch = new SpriteBatch(1000);
 		viewport = new FitViewport(WIDTH, HIGTH);
 		camera = (OrthographicCamera)viewport.getCamera();
 		camera.translate(WIDTH / 2, HIGTH / 2);
@@ -88,12 +89,14 @@ public class MyGdxGame implements ApplicationListener {
 
 		TextureComponent texture = engine.createComponent(TextureComponent.class);
 		texture.setTexture(manager.getTexture("image.png", true));
+		texture.getTexture().bind(1000 - position.zIndex);
 		entity.add(texture);
 		
 		SoundComponent sound = engine.createComponent(SoundComponent.class);
-		Sound s = Gdx.audio.newSound(Gdx.files.internal("sound.ogg"));
-		sound.setSound(s);
+		sound.setSound(manager.getSound("sound.ogg"));
 		entity.add(sound);
+		
+		
 		
 		return entity;
 	}
@@ -111,8 +114,14 @@ public class MyGdxGame implements ApplicationListener {
 
 		TextureComponent texture = engine.createComponent(TextureComponent.class);
 		texture.setTexture(manager.getTexture("logo.png", true));
+		texture.getTexture().bind(1000 - position.zIndex);
 		entity.add(texture);
 
+		/*
+		ShaderComponent shader = engine.createComponent(ShaderComponent.class);
+		shader.initShader("data/shaders/vert.glsl","data/shaders/invert_shader.glsl");
+		entity.add(shader);
+		*/
 		return entity;
 	}
 
