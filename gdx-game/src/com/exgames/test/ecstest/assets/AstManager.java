@@ -4,7 +4,6 @@ import java.util.HashMap;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture;
-//import com.mycompany.mygame2.com.exgdx.test.model.AnimData;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -18,6 +17,7 @@ public class AstManager extends AssetManager
 
 	public <T extends Object> void load(String fileName, String assetName, Class<T> type){
 		load(fileName, type);
+		log("load(): " + fileName);
 		nameAssets.put(assetName, fileName);
 	}
 
@@ -45,8 +45,8 @@ public class AstManager extends AssetManager
 	}
 
 	@Override
-	public <T extends Object> T get(String assetName, Class<T> type) {
-		Gdx.app.log(TAG, "get(): asset name: " + assetName);
+	public <T extends Object> T get(String assetName, Class<T> type){
+		log("get(): asset name: " + assetName + " type: " + type);
 		return super.get(nameAssets.get(assetName), type);
 	}
 	
@@ -71,4 +71,8 @@ public class AstManager extends AssetManager
 		return data;
 	}
 	*/
+	
+	private void log(String message){
+		Gdx.app.log(TAG, message);
+	}
 }
