@@ -49,6 +49,7 @@ public class MoveSystem extends IteratingSystem
 	private void move(PositionComponent position, VelocityComponent velocity, BodyComponent body, float deltaT) { 
 		body.x += velocity.x * deltaT;
 		body.y += velocity.y * deltaT;
+		body.degress = velocity.angle();
 		
 		boolean hcol = false;
 		boolean vcol = false;
