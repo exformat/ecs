@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.assets.loaders.AssetLoader;
 
 public class AstManager extends AssetManager
 {
@@ -15,6 +16,9 @@ public class AstManager extends AssetManager
 	private HashMap<String, String> nameAssets = new HashMap<String,String>();
 	private HashMap<String, float[]> animData = new HashMap<String, float[]>();
 
+	public AstManager(){
+	}
+	
 	public <T extends Object> void load(String fileName, String assetName, Class<T> type){
 		load(fileName, type);
 		log("load(): " + fileName);
@@ -23,6 +27,7 @@ public class AstManager extends AssetManager
 
 	public <T extends Object> void load(String fileName, String assetName, Class<T> type, AssetLoaderParameters<T> parameter) {
 		load(fileName, type, parameter);
+		log("load(): " + fileName);
 		nameAssets.put(assetName, fileName);
 	}
 
@@ -60,6 +65,10 @@ public class AstManager extends AssetManager
 			tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		}
 		return tex;
+	}
+	
+	public String getShader(String assetName){
+		return get(assetName, String.class);
 	}
 	
 	/*

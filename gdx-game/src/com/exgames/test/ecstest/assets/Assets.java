@@ -15,7 +15,8 @@ public class Assets {
 	private final String TAG = "ASSETS",
 						 TEXTURE_PATH = "data/textures/",
 						 SOUND_PATH   = "data/sound/",
-						 MUSIC_PATH   = "data/music/";
+						 MUSIC_PATH   = "data/music/",
+						 SHADERS_PATH = "data/shaders";
 
 
 	private AstManager assetManager;
@@ -29,8 +30,17 @@ public class Assets {
 		loadTextures();
 		loadSound();
 		loadMusic();
+		//loadShaders();
 	}
 
+	private void loadShaders(){
+		log("load shaders: " + SHADERS_PATH);
+		FileHandle[] files = Gdx.files.internal(SHADERS_PATH).list(".glsl");
+		for (FileHandle file: files) {
+			assetManager.load(file.path(), file.name(), String.class);
+		}
+	}
+	
 	private void loadMusic() {
 		log("load music: " + MUSIC_PATH);
 		FileHandle[] files = Gdx.files.internal(MUSIC_PATH).list(".wav");
