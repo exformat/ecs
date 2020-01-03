@@ -34,16 +34,11 @@ public class MoveSystem extends IteratingSystem
 
 	@Override
 	protected void processEntity(Entity entity, float deltaT) {
-		PositionComponent positionComponent;
-		VelocityComponent velosityComponent;
-		BodyComponent bodyComponent;
-		
-		positionComponent = (PositionComponent)positionMapper.get(entity);
-		velosityComponent = (VelocityComponent)velosityMapper.get(entity);
-		bodyComponent = (BodyComponent)bodyMapper.get(entity);
+		PositionComponent positionComponent = (PositionComponent)positionMapper.get(entity);
+		VelocityComponent velosityComponent = (VelocityComponent)velosityMapper.get(entity);
+		BodyComponent bodyComponent = (BodyComponent)bodyMapper.get(entity);
 		
 		move(positionComponent, velosityComponent, bodyComponent, deltaT);
-		
 	}
 
 	private void move(PositionComponent position, VelocityComponent velocity, BodyComponent body, float deltaT) { 
