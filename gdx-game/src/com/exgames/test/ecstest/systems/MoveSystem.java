@@ -1,15 +1,14 @@
 package com.exgames.test.ecstest.systems;
-import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
-import com.exgames.test.ecstest.components.AccelerationComponent;
-import com.exgames.test.ecstest.components.PositionComponent;
-import com.exgames.test.ecstest.components.VelocityComponent;
-import com.exgames.test.ecstest.components.BodyComponent;
-import java.lang.reflect.Type;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Rectangle;
+import com.exgames.test.ecstest.components.BodyComponent;
+import com.exgames.test.ecstest.components.PhysicsComponent;
+import com.exgames.test.ecstest.components.PositionComponent;
+import com.exgames.test.ecstest.components.VelocityComponent;
 import com.exgames.test.ecstest.events.Events;
 
 public class MoveSystem extends IteratingSystem
@@ -22,27 +21,31 @@ public class MoveSystem extends IteratingSystem
 	private static ComponentMapper positionMapper = ComponentMapper.getFor(positionType);
 	private static ComponentMapper velosityMapper = ComponentMapper.getFor(velosityType);
 	private static ComponentMapper bodyMapper = ComponentMapper.getFor(bodyType);
+	private static ComponentMapper PhyMapper = ComponentMapper.getFor(PhysicsComponent.class);
 	
 	private Rectangle screen;
+	private float pixPerMeter = 128;
 	
 	public MoveSystem(Rectangle screen){
 		super(Family.all(positionType, 
 						 velosityType,
-						 bodyType).get());
+						 bodyType,
+						 PhysicsComponent.class).get());
 		this.screen = screen;
 	}
 
 	@Override
 	protected void processEntity(Entity entity, float deltaT) {
-		PositionComponent positionComponent;
-		VelocityComponent velosityComponent;
-		BodyComponent bodyComponent;
 		
-		positionComponent = (PositionComponent)positionMapper.get(entity);
-		velosityComponent = (VelocityComponent)velosityMapper.get(entity);
-		bodyComponent = (BodyComponent)bodyMapper.get(entity);
+		//PositionComponent positionComponent = (PositionComponent)positionMapper.get(entity);
+		//VelocityComponent velosityComponent = (VelocityComponent)velosityMapper.get(entity);
+		BodyComponent bodyComponent = (BodyComponent)bodyMapper.get(entity);
+		PhysicsComponent physComponent = (PhysicsComponent)PhyMapper.get(entity);
 		
-		move(positionComponent, velosityComponent, bodyComponent, deltaT);
+		bodyComponent.x = physComponent.getBody().getPosition().x * pixPerMeter;
+		bodyComponent.y = physComponent.getBody().getPosition().y * pixPerMeter;
+		bodyComponent.degress = physComponent.getBody().getAngle();
+		//move(positionComponent, velosityComponent, bodyComponent, deltaT);
 		
 	}
 

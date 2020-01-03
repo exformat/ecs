@@ -4,9 +4,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.exgames.test.ecstest.components.BodyComponent;
+import com.exgames.test.ecstest.components.PhysicsComponent;
 import com.exgames.test.ecstest.components.PositionComponent;
 import com.exgames.test.ecstest.components.TextureComponent;
 import java.util.Comparator;
@@ -15,15 +15,16 @@ public class RenderSystem extends SortedIteratingSystem {
 
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
-	private static ComponentMapper bodMaper = ComponentMapper.getFor(BodyComponent.class);
-	private static ComponentMapper texMaper = ComponentMapper.getFor(TextureComponent.class);
-	private static ComponentMapper posMaper = ComponentMapper.getFor(PositionComponent.class);
-
+	
+	private static ComponentMapper bodMapper = ComponentMapper.getFor(BodyComponent.class);
+	private static ComponentMapper texMapper = ComponentMapper.getFor(TextureComponent.class);
+	private static ComponentMapper posMapper = ComponentMapper.getFor(PositionComponent.class);
+	
 	private static Comparator<Entity> comparator = new Comparator<Entity>(){
 		public int compare(Entity en1, Entity en2) {
 			
-			PositionComponent p1 = (PositionComponent)posMaper.get(en1);
-			PositionComponent p2 = (PositionComponent)posMaper.get(en2);
+			PositionComponent p1 = (PositionComponent)posMapper.get(en1);
+			PositionComponent p2 = (PositionComponent)posMapper.get(en2);
 
 			return p1.compareTo(p2);
 		}
@@ -32,7 +33,8 @@ public class RenderSystem extends SortedIteratingSystem {
 	public RenderSystem(SpriteBatch batch, OrthographicCamera camera) {
 		super(Family.all(BodyComponent.class,
 						 TextureComponent.class,
-						 PositionComponent.class).get(),
+						 PositionComponent.class,
+						 PhysicsComponent.class).get(),
 			  comparator);
 		this.batch = batch;
 		this.camera = camera;
@@ -52,8 +54,8 @@ public class RenderSystem extends SortedIteratingSystem {
 
 	@Override
 	protected void processEntity(Entity entity, float deltaT) {
-		BodyComponent body = (BodyComponent)bodMaper.get(entity);
-		TextureComponent texture = (TextureComponent)texMaper.get(entity);
+		BodyComponent body = (BodyComponent)bodMapper.get(entity);
+		TextureComponent texture = (TextureComponent)texMapper.get(entity);
 		
 		render(body, texture);
 	}

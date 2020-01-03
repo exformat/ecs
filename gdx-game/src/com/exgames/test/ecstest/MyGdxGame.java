@@ -5,31 +5,39 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.exgames.test.ecstest.assets.Assets;
 import com.exgames.test.ecstest.assets.AstManager;
 import com.exgames.test.ecstest.components.BodyComponent;
 import com.exgames.test.ecstest.components.PositionComponent;
+import com.exgames.test.ecstest.components.SoundComponent;
 import com.exgames.test.ecstest.components.TextureComponent;
 import com.exgames.test.ecstest.components.VelocityComponent;
-import com.exgames.test.ecstest.components.SoundComponent;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.Audio;
-import com.exgames.test.ecstest.components.ShaderComponent;
+import android.content.EntityIterator;
+import com.exgames.test.ecstest.components.PhysicsComponent;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 public class MyGdxGame implements ApplicationListener {
 	
 	float WIDTH = 720;
 	float HIGTH = 1280;
-
+	
+	private float pixPerMeter = 0.008f;
+	
 	Rectangle screenRect;
 
 	SpriteBatch batch;
 	OrthographicCamera camera;
+	World world;
 	Viewport viewport;
 
 	private Engine engine;
@@ -49,7 +57,9 @@ public class MyGdxGame implements ApplicationListener {
 		camera.translate(WIDTH / 2, HIGTH / 2);
 		screenRect = new Rectangle(0, 0, WIDTH, HIGTH);
 
-		engine = new Engine(batch, camera, screenRect);
+		world = new World(new Vector2(0, -10), true);
+		
+		engine = new Engine(batch, camera, world, screenRect);
 	}
 
 	boolean start = false;
@@ -62,6 +72,12 @@ public class MyGdxGame implements ApplicationListener {
 			if (!start) {
 				engine.addEntity(createBackground());
 				engine.addEntity(createHero());
+				
+				engine.addEntity(createWall(new Vector2(0,0), new Vector2(camera.viewportWidth, 1)));
+				engine.addEntity(createWall(new Vector2(0,camera.viewportHeight), new Vector2(camera.viewportWidth, 1)));
+				engine.addEntity(createWall(new Vector2(0,0), new Vector2(1, camera.viewportHeight)));
+				engine.addEntity(createWall(new Vector2(camera.viewportWidth,0), new Vector2(1, camera.viewportHeight)));
+				
 				start = true;
 			}
 		}
@@ -97,6 +113,28 @@ public class MyGdxGame implements ApplicationListener {
 		entity.add(sound);
 		
 		
+		
+		return entity;
+	}
+	
+	private Entity createWall(Vector2 coords, Vector2 size){
+		Entity entity = engine.createEntity();
+		PhysicsComponent phy = engine.createComponent(PhysicsComponent.class);
+		
+		BodyDef def = new BodyDef();
+		def.type = BodyDef.BodyType.StaticBody;
+		def.position.set(coords);
+		def.position.scl(pixPerMeter);
+		
+		Body body = world.createBody(def);
+		
+		//FixtureDef fixDef = new FixtureDef();
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(size.x, size.y);
+		//fixDef.shape = shape;
+		body.createFixture(shape, 0);
+		shape.dispose();
+		phy.setBody(body);
 		
 		return entity;
 	}
