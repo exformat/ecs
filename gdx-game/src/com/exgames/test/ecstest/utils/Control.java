@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.exgames.test.ecstest.events.ControlEvents;
 
 public class Control extends InputAdapter implements GestureDetector.GestureListener {
 
@@ -22,6 +23,7 @@ public class Control extends InputAdapter implements GestureDetector.GestureList
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
 		log("tap: x:" + x + " y:" + y);
+		ControlEvents.tap.set(x, y);
 		return false;
 	}
 
