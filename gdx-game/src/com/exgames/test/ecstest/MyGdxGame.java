@@ -20,6 +20,8 @@ import com.exgames.test.ecstest.components.SoundComponent;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.Audio;
 import com.exgames.test.ecstest.components.ShaderComponent;
+import com.exgames.test.ecstest.components.control_components.TapComponent;
+import com.exgames.test.ecstest.utils.Control;
 
 public class MyGdxGame implements ApplicationListener {
 	
@@ -42,6 +44,7 @@ public class MyGdxGame implements ApplicationListener {
 		assets = new Assets();
 		assets.loadAssets();
 		manager = assets.getAssetManager();
+		new Control();
 
 		batch = new SpriteBatch(1000);
 		viewport = new FitViewport(WIDTH, HIGTH);
@@ -49,7 +52,7 @@ public class MyGdxGame implements ApplicationListener {
 		camera.translate(WIDTH / 2, HIGTH / 2);
 		screenRect = new Rectangle(0, 0, WIDTH, HIGTH);
 
-		engine = new Engine(batch, camera, screenRect);
+		engine = new Engine(batch, camera, viewport, screenRect);
 	}
 
 	boolean start = false;
@@ -84,7 +87,7 @@ public class MyGdxGame implements ApplicationListener {
 		entity.add(body);
 
 		VelocityComponent velocity = engine.createComponent(VelocityComponent.class);
-		velocity.set(-80, -100);
+		velocity.set(0, 0);
 		entity.add(velocity);
 
 		TextureComponent texture = engine.createComponent(TextureComponent.class);
@@ -96,6 +99,8 @@ public class MyGdxGame implements ApplicationListener {
 		sound.setSound(manager.getSound("sound.ogg"));
 		entity.add(sound);
 		
+		TapComponent tap = engine.createComponent(TapComponent.class);
+		entity.add(tap);
 		
 		
 		return entity;
