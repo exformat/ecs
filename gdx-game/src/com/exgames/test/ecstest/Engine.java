@@ -30,7 +30,7 @@ public class Engine extends PooledEngine
 		this.world = world;
 		
 		renderSystem = new RenderSystem(batch, camera);
-		moveSystem = new MoveSystem(screenRect);
+		moveSystem = new MoveSystem();
 		physicsSystem = new PhysicsSystem(world);
 		soundSystem = new SoundSystem();
 		shaderSystem = new ShaderSystem(batch, camera);

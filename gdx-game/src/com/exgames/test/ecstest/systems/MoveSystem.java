@@ -21,70 +21,25 @@ public class MoveSystem extends IteratingSystem
 	private static ComponentMapper positionMapper = ComponentMapper.getFor(positionType);
 	private static ComponentMapper velosityMapper = ComponentMapper.getFor(velosityType);
 	private static ComponentMapper bodyMapper = ComponentMapper.getFor(bodyType);
-	private static ComponentMapper PhyMapper = ComponentMapper.getFor(PhysicsComponent.class);
 	
-	private Rectangle screen;
-	private float pixPerMeter = 128;
-	
-	public MoveSystem(Rectangle screen){
+	public MoveSystem(){
 		super(Family.all(positionType, 
 						 velosityType,
-						 bodyType,
-						 PhysicsComponent.class).get());
-		this.screen = screen;
+						 bodyType).get());
 	}
 
 	@Override
 	protected void processEntity(Entity entity, float deltaT) {
-		
-		//PositionComponent positionComponent = (PositionComponent)positionMapper.get(entity);
-		//VelocityComponent velosityComponent = (VelocityComponent)velosityMapper.get(entity);
+		PositionComponent positionComponent = (PositionComponent)positionMapper.get(entity);
+		VelocityComponent velosityComponent = (VelocityComponent)velosityMapper.get(entity);
 		BodyComponent bodyComponent = (BodyComponent)bodyMapper.get(entity);
-		PhysicsComponent physComponent = (PhysicsComponent)PhyMapper.get(entity);
 		
-		bodyComponent.x = physComponent.getBody().getPosition().x * pixPerMeter;
-		bodyComponent.y = physComponent.getBody().getPosition().y * pixPerMeter;
-		bodyComponent.degress = physComponent.getBody().getAngle();
-		//move(positionComponent, velosityComponent, bodyComponent, deltaT);
-		
+		move(positionComponent, velosityComponent, bodyComponent, deltaT);
 	}
 
 	private void move(PositionComponent position, VelocityComponent velocity, BodyComponent body, float deltaT) { 
 		body.x += velocity.x * deltaT;
 		body.y += velocity.y * deltaT;
 		body.degress = velocity.angle();
-		
-		boolean hcol = false;
-		boolean vcol = false;
-		
-		if(hasHorizontalCollision(body)){
-			velocity.x *= -1;
-			body.x = position.x ;
-			hcol = true;
-		}
-		
-		if(hasVerticalCollision(body)){
-			velocity.y *= -1;
-			body.y = position.y;
-			vcol = true;
-		}
-		
-		if(!hcol && !vcol){
-			position.x = body.x;
-			position.y = body.y;
-			Events.isCollision = false;
-		}
 	} 
-	
-	private boolean hasHorizontalCollision(BodyComponent bodyComponent){
-		boolean horCollision = bodyComponent.x < screen.x || (bodyComponent.x + bodyComponent.width) > (screen.x + screen.width);
-		Events.isCollision = true;
-		return horCollision;
-	}
-	
-	private boolean hasVerticalCollision(BodyComponent bodyComponent){ 
-		boolean vertCollision = bodyComponent.y < screen.y || (bodyComponent.y + bodyComponent.height) > (screen.y + screen.height);
-		Events.isCollision = true;
-		return vertCollision;
-	}
 }
